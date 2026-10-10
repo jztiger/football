@@ -36,6 +36,7 @@ export interface Bet {
 export interface GradedLeg extends BetLeg {
   result: LegResult;
   score?: string; // "Tulsa 24, Navy 21" when graded from a final
+  finalizedAt?: string; // ISO, from the score feed's last update
 }
 
 export interface GradedBet extends Omit<Bet, "legs"> {

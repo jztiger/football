@@ -6,6 +6,8 @@ export interface FinalScore {
   away: string;
   homeScore: number;
   awayScore: number;
+  /** When the score feed last updated this game, roughly when it went final. */
+  lastUpdate?: string;
 }
 
 /** Grade a single leg from a final score. Returns undefined when the leg can't be matched. */
@@ -49,8 +51,8 @@ export function liveDecimal(legs: GradedLeg[]): number {
   return legs.filter((l) => l.result !== "push").reduce((d, l) => d * americanToDecimal(l.price), 1);
 }
 
-export function gradeBet(bet: Bet, results: LegResult[], scores: (string | undefined)[] = []): GradedBet {
-  const legs: GradedLeg[] = bet.legs.map((l, i) => ({ ...l, result: results[i] ?? "pending", score: scores[i] }));
+export function gradeBet(bet: Bet, results: LegResult[], scores: (string | undefined)[] = [], finalizedAt: (string | undefined)[] = []): GradedBet {
+  const legs: GradedLeg[] = bet.legs.map((l, i) => ({ ...l, result: results[i] ?? "pending", score: scores[i], finalizedAt: finalizedAt[i] }));
   const status = betStatus(legs.map((l) => l.result));
   const decimal = liveDecimal(legs);
   const anyPush = legs.some((l) => l.result === "push");

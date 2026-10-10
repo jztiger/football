@@ -9,6 +9,7 @@ interface RawScore {
   home_team: string;
   away_team: string;
   scores: { name: string; score: string }[] | null;
+  last_update: string | null;
 }
 
 /**
@@ -32,7 +33,13 @@ export async function getFinalScores(league: League, daysFrom = 3): Promise<{ fi
       const home = g.scores.find((s) => s.name === g.home_team);
       const away = g.scores.find((s) => s.name === g.away_team);
       if (!home || !away) continue;
-      finals.push({ home: g.home_team, away: g.away_team, homeScore: Number(home.score), awayScore: Number(away.score) });
+      finals.push({
+        home: g.home_team,
+        away: g.away_team,
+        homeScore: Number(home.score),
+        awayScore: Number(away.score),
+        lastUpdate: g.last_update ?? undefined,
+      });
     }
     return { finals };
   } catch (err) {

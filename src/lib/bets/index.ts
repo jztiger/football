@@ -28,18 +28,21 @@ export async function loadGradedBets(): Promise<{ bets: GradedBet[]; scoreErrors
   const graded = bets.map((bet) => {
     const results: LegResult[] = [];
     const lines: (string | undefined)[] = [];
+    const finalized: (string | undefined)[] = [];
     for (const leg of bet.legs) {
       if (leg.result) {
         results.push(leg.result);
         lines.push(undefined);
+        finalized.push(undefined);
         continue;
       }
       const match = finals.find((s) => (s.home === leg.team && s.away === leg.opponent) || (s.away === leg.team && s.home === leg.opponent));
       const r = match ? gradeLegFromScore(leg, match) : undefined;
       results.push(r ?? "pending");
       lines.push(match && r ? scoreLine(leg, match) : undefined);
+      finalized.push(match && r ? match.lastUpdate : undefined);
     }
-    return gradeBet(bet, results, lines);
+    return gradeBet(bet, results, lines, finalized);
   });
 
   graded.sort((a, b) => b.placedAt.localeCompare(a.placedAt));

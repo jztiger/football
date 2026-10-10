@@ -1,0 +1,38 @@
+[
+  {
+    "id": "EE3C723F6416",
+    "book": "Circa",
+    "placedAt": "2026-10-10T17:57:24Z",
+    "stake": 40,
+    "toWin": 129.1,
+    "legs": [
+      { "label": "[408] Kansas St ML -135", "market": "h2h", "league": "ncaaf", "team": "Kansas State Wildcats", "opponent": "Houston Cougars", "price": -135, "fairAtPlacement": 0.553 },
+      { "label": "[392] Oregon ML -410", "market": "h2h", "league": "ncaaf", "team": "Oregon Ducks", "opponent": "UCLA Bruins", "price": -410, "fairAtPlacement": 0.792 },
+      { "label": "[401] Tulsa +3 -105", "market": "spreads", "league": "ncaaf", "team": "Tulsa Golden Hurricane", "opponent": "Navy Midshipmen", "point": 3, "price": -105, "fairAtPlacement": 0.512 }
+    ]
+  },
+  {
+    "id": "E9BE931EE58B",
+    "book": "Circa",
+    "placedAt": "2026-10-10T18:18:22Z",
+    "stake": 38,
+    "toWin": 982.7,
+    "legs": [
+      { "label": "[401] Tulsa +3 -105", "market": "spreads", "league": "ncaaf", "team": "Tulsa Golden Hurricane", "opponent": "Navy Midshipmen", "point": 3, "price": -105, "fairAtPlacement": 0.512 },
+      { "label": "[354] Akron ML +180", "market": "h2h", "league": "ncaaf", "team": "Akron Zips", "opponent": "Eastern Michigan Eagles", "price": 180, "fairAtPlacement": 0.336 },
+      { "label": "[396] Oklahoma ML +295", "market": "h2h", "league": "ncaaf", "team": "Oklahoma Sooners", "opponent": "Texas Longhorns", "price": 295, "fairAtPlacement": 0.248 },
+      { "label": "[392] Oregon ML -410", "market": "h2h", "league": "ncaaf", "team": "Oregon Ducks", "opponent": "UCLA Bruins", "price": -410, "fairAtPlacement": 0.792 }
+    ]
+  },
+  {
+    "id": "F8A07E1054AA",
+    "book": "Circa",
+    "placedAt": "2026-10-10T18:20:01Z",
+    "stake": 2,
+    "toWin": 1.25,
+    "notes": "Player prop, grade by hand: set result to won/lost in src/data/bets.json.",
+    "legs": [
+      { "label": "[17672] Nate Frazier (UGA) score a TD? NO -160", "market": "prop", "league": "ncaaf", "team": "Georgia Bulldogs", "opponent": "Alabama Crimson Tide", "price": -160 }
+    ]
+  }
+]

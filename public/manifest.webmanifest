@@ -1,0 +1,10 @@
+{
+  "name": "EdgeBoard",
+  "short_name": "EdgeBoard",
+  "description": "NFL and college football value picks against the odds",
+  "start_url": "/nfl",
+  "display": "standalone",
+  "background_color": "#0b0f14",
+  "theme_color": "#0b0f14",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

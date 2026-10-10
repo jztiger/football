@@ -57,3 +57,11 @@ The projected winner of each game is simply the side with the higher consensus m
 - [ ] Bet tracker with closing-line-value (CLV) grading, the honest measure of whether picks are good.
 - [ ] Alerts (web push) when a new A-grade edge appears.
 - [ ] Player props and alternate lines.
+
+## Deploy in three minutes (Vercel)
+
+1. Go to https://vercel.com/new and import `jztiger/football`.
+2. Under Environment Variables add `ODDS_API_KEY` with your key from the-odds-api.com.
+3. Deploy. Open the URL on your phone and use "Add to Home Screen" for the app-style install.
+
+Never commit the key: it belongs in `.env.local` locally and in Vercel's environment settings in production.

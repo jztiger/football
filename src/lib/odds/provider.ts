@@ -39,9 +39,12 @@ async function fetchLive(league: League): Promise<{ games: RawGame[]; quota: Pro
     const body = await res.text().catch(() => "");
     throw new OddsFetchError(`Odds API ${res.status}: ${body.slice(0, 200)}`, res.status);
   }
-  const games = (await res.json()) as RawGame[];
+  const games = (await res.json()) as unknown;
+  if (!Array.isArray(games)) {
+    throw new OddsFetchError("Odds API returned an unexpected response shape");
+  }
   return {
-    games,
+    games: games as RawGame[],
     quota: {
       remaining: res.headers.get("x-requests-remaining") ?? undefined,
       used: res.headers.get("x-requests-used") ?? undefined,

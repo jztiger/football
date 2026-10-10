@@ -15,6 +15,8 @@ export interface BetLeg {
   point?: number;
   /** "Over" / "Under" for totals. */
   side?: "Over" | "Under";
+  /** Kickoff, ISO. Filled from the score feed when missing. */
+  commenceTime?: string;
   price: number; // American
   /** Consensus fair probability when the bet was placed, for EV tracking. */
   fairAtPlacement?: number;

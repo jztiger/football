@@ -23,9 +23,18 @@ export async function loadGradedBets(): Promise<{ bets: GradedBet[]; scoreErrors
   const leagues = [...new Set(bets.flatMap((b) => b.legs.map((l) => l.league)).filter((l): l is League => Boolean(l)))];
   const scoreSets = await Promise.all(leagues.map((l) => getFinalScores(l)));
   const finals = scoreSets.flatMap((s) => s.finals);
+  const schedule = scoreSets.flatMap((s) => s.schedule);
   const scoreErrors = scoreSets.map((s) => s.error).filter((e): e is string => Boolean(e));
 
-  const graded = bets.map((bet) => {
+  const graded = bets.map((rawBet) => {
+    const bet: Bet = {
+      ...rawBet,
+      legs: rawBet.legs.map((leg) => {
+        if (leg.commenceTime) return leg;
+        const g = schedule.find((s) => (s.home === leg.team && s.away === leg.opponent) || (s.away === leg.team && s.home === leg.opponent));
+        return g ? { ...leg, commenceTime: g.commenceTime } : leg;
+      }),
+    };
     const results: LegResult[] = [];
     const lines: (string | undefined)[] = [];
     const finalized: (string | undefined)[] = [];

@@ -1,5 +1,6 @@
 import { loadGradedBets, summarize, type GradedBet, type LegResult } from "@/lib/bets";
 import { formatAmerican, pct } from "@/lib/odds";
+import { LocalTime } from "@/components/LocalTime";
 
 export const dynamic = "force-dynamic";
 
@@ -86,6 +87,11 @@ function BetCard({ bet }: { bet: GradedBet }) {
             <div className="min-w-0 flex-1">
               <p className={leg.result === "lost" ? "text-muted line-through" : ""}>{leg.label}</p>
               <p className="text-[11px] text-muted">
+                {leg.commenceTime && (
+                  <>
+                    <LocalTime iso={leg.commenceTime} /> ·{" "}
+                  </>
+                )}
                 {leg.score ?? (leg.result === "pending" ? "pending" : leg.result)}
                 {leg.fairAtPlacement !== undefined ? ` · fair ${pct(leg.fairAtPlacement)} at ${formatAmerican(leg.price)}` : ""}
               </p>

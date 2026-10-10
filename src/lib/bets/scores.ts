@@ -16,18 +16,28 @@ interface RawScore {
  * Final scores from The Odds API (2 credits per call, cached 5 minutes).
  * Returns only completed games. Empty when no key is set or the call fails.
  */
-export async function getFinalScores(league: League, daysFrom = 3): Promise<{ finals: FinalScore[]; error?: string }> {
+export interface ScheduledGame {
+  home: string;
+  away: string;
+  commenceTime: string;
+}
+
+export async function getFinalScores(
+  league: League,
+  daysFrom = 3,
+): Promise<{ finals: FinalScore[]; schedule: ScheduledGame[]; error?: string }> {
   const apiKey = process.env.ODDS_API_KEY;
-  if (!apiKey) return { finals: [], error: "ODDS_API_KEY is not set" };
+  if (!apiKey) return { finals: [], schedule: [], error: "ODDS_API_KEY is not set" };
   const url = new URL(`https://api.the-odds-api.com/v4/sports/${LEAGUES[league].sportKey}/scores`);
   url.searchParams.set("apiKey", apiKey);
   url.searchParams.set("daysFrom", String(Math.min(3, Math.max(1, daysFrom))));
   url.searchParams.set("dateFormat", "iso");
   try {
     const res = await fetch(url, { next: { revalidate: 300 } });
-    if (!res.ok) return { finals: [], error: `scores API ${res.status}` };
+    if (!res.ok) return { finals: [], schedule: [], error: `scores API ${res.status}` };
     const raw = (await res.json()) as RawScore[];
     const finals: FinalScore[] = [];
+    const schedule: ScheduledGame[] = raw.map((g) => ({ home: g.home_team, away: g.away_team, commenceTime: g.commence_time }));
     for (const g of raw) {
       if (!g.completed || !g.scores) continue;
       const home = g.scores.find((s) => s.name === g.home_team);
@@ -41,8 +51,8 @@ export async function getFinalScores(league: League, daysFrom = 3): Promise<{ fi
         lastUpdate: g.last_update ?? undefined,
       });
     }
-    return { finals };
+    return { finals, schedule };
   } catch (err) {
-    return { finals: [], error: err instanceof Error ? err.message : String(err) };
+    return { finals: [], schedule: [], error: err instanceof Error ? err.message : String(err) };
   }
 }

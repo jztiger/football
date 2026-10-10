@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { formatAmerican, loadLeague, pct, type League } from "@/lib/odds";
 import { bestParlays, candidateLegs, type Parlay } from "@/lib/odds/parlay";
-import { formatKickoff } from "@/lib/format";
+import { LocalTime } from "@/components/LocalTime";
 import { inWindow, isWindow, WINDOWS, type Window } from "@/lib/odds/window";
 
 export const dynamic = "force-dynamic";
@@ -151,7 +151,9 @@ function ParlayCard({ parlay, rank }: { parlay: Parlay; rank: number }) {
                 </p>
               </div>
             </div>
-            <p className="mt-0.5 text-[11px] text-muted">{formatKickoff(leg.commenceTime)}</p>
+            <p className="mt-0.5 text-[11px] text-muted">
+              <LocalTime iso={leg.commenceTime} />
+            </p>
           </li>
         ))}
       </ul>

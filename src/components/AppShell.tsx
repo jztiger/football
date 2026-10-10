@@ -14,8 +14,9 @@ function currentLeague(pathname: string): string {
   return seg === "ncaaf" ? "ncaaf" : "nfl";
 }
 
-function currentView(pathname: string): "picks" | "board" | "about" {
+function currentView(pathname: string): "picks" | "board" | "parlay" | "about" {
   if (pathname.startsWith("/about")) return "about";
+  if (pathname.startsWith("/parlay")) return "parlay";
   if (pathname.split("/")[2] === "board") return "board";
   return "picks";
 }
@@ -34,7 +35,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </Link>
           <nav className="flex rounded-full bg-surface p-1 text-sm">
             {LEAGUE_TABS.map((t) => {
-              const active = t.slug === league && view !== "about";
+              const active = t.slug === league && view !== "about" && view !== "parlay";
               const href = view === "board" ? `/${t.slug}/board` : `/${t.slug}`;
               return (
                 <Link
@@ -56,9 +57,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-bg/95 backdrop-blur"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="mx-auto grid max-w-xl grid-cols-3 text-xs">
+        <div className="mx-auto grid max-w-xl grid-cols-4 text-xs">
           <BottomTab href={`/${league}`} active={view === "picks"} label="Picks" icon="◆" />
           <BottomTab href={`/${league}/board`} active={view === "board"} label="Board" icon="▤" />
+          <BottomTab href="/parlay" active={view === "parlay"} label="Parlay" icon="⛓" />
           <BottomTab href="/about" active={view === "about"} label="Method" icon="?" />
         </div>
       </nav>

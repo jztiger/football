@@ -2,6 +2,7 @@ import Link from "next/link";
 import { formatAmerican, loadLeague, pct, type League } from "@/lib/odds";
 import { bestParlays, candidateLegs, type Parlay } from "@/lib/odds/parlay";
 import { formatKickoff } from "@/lib/format";
+import { inWindow, isWindow, WINDOWS, type Window } from "@/lib/odds/window";
 
 export const dynamic = "force-dynamic";
 
@@ -12,18 +13,20 @@ const LEAGUE_OPTIONS: { key: "all" | League; label: string }[] = [
   { key: "ncaaf", label: "College" },
 ];
 
-type Search = { book?: string; legs?: string; league?: string };
+type Search = { book?: string; legs?: string; league?: string; window?: string };
 
 export default async function ParlayPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
   const legs = LEG_OPTIONS.includes(Number(sp.legs)) ? Number(sp.legs) : 3;
   const leagueFilter = sp.league === "nfl" || sp.league === "ncaaf" ? sp.league : "all";
   const book = sp.book && sp.book !== "best" ? sp.book : undefined;
+  const window: Window = isWindow(sp.window) ? sp.window : "any";
 
   const boards = await Promise.all(
     (["nfl", "ncaaf"] as const).filter((l) => leagueFilter === "all" || l === leagueFilter).map((l) => loadLeague(l)),
   );
-  const games = boards.flatMap((b) => b.games);
+  const now = new Date();
+  const games = boards.flatMap((b) => b.games).filter((g) => inWindow(g.commenceTime, window, now));
   const sample = boards.some((b) => b.snapshot.source === "mock");
 
   const books = new Map<string, string>();
@@ -31,12 +34,11 @@ export default async function ParlayPage({ searchParams }: { searchParams: Promi
   const bookList = [...books.entries()].sort((a, b) => a[1].localeCompare(b[1]));
   const bookInFeed = book ? books.has(book) : false;
 
-  const now = new Date();
   const candidates = candidateLegs(games, { book, now });
   const parlays = bestParlays(candidates, legs, 5);
 
   const href = (patch: Partial<Search>) => {
-    const q = new URLSearchParams({ book: book ?? "best", legs: String(legs), league: leagueFilter, ...patch });
+    const q = new URLSearchParams({ book: book ?? "best", legs: String(legs), league: leagueFilter, window, ...patch });
     return `/parlay?${q.toString()}`;
   };
 
@@ -54,6 +56,7 @@ export default async function ParlayPage({ searchParams }: { searchParams: Promi
 
       <div className="mb-4 space-y-2">
         <Chips label="Legs" items={LEG_OPTIONS.map((n) => ({ key: String(n), label: String(n), active: n === legs, href: href({ legs: String(n) }) }))} />
+        <Chips label="When" items={WINDOWS.map((w) => ({ key: w.key, label: w.label, active: w.key === window, href: href({ window: w.key }) }))} />
         <Chips label="Games" items={LEAGUE_OPTIONS.map((o) => ({ key: o.key, label: o.label, active: o.key === leagueFilter, href: href({ league: o.key }) }))} />
         <Chips
           label="Book"
@@ -74,7 +77,7 @@ export default async function ParlayPage({ searchParams }: { searchParams: Promi
 
       {parlays.length === 0 ? (
         <p className="rounded-xl border border-border bg-surface p-6 text-center text-sm text-muted">
-          Not enough upcoming games with three or more books to build a {legs}-leg parlay.
+          Not enough upcoming games in this window with three or more books to build a {legs}-leg parlay.
         </p>
       ) : (
         <ol className="space-y-3">
